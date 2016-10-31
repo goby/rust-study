@@ -1,11 +1,14 @@
 extern crate rand;
 
+extern crate guessing;
+
+use guessing::*;
 
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
 
-#[warn(dead_code)]
+//#[warn(dead_code)]
 fn guessing_number() {
 
     println!("Guess the number!");
@@ -75,56 +78,98 @@ fn loop_label() {
 
 }
 
-fn move_() {
 
-    fn take(v: Vec<i32>) -> Vec<i32> {
-        v 
-    }
-
-    let v = vec![1,2,3];
-    let v2 = take(v);
-    println!("v[0] is {}", v2[0]);
-}
-
-fn ownership() {
-
-    let mut x = 5;
-    {
-        let r1 = &x;
-        let r2 = &x;
-        let r3 = &x;
-        println!("readonly: {}, {}, {}", r1, r2, r3);
-    }
-    {
-        let w = &mut x;
-        *w += 1;
-    }
-    let r1 = &x;
-    let r2 = &x;
-    let r3 = &x;
-    println!("after wr: {}, {}, {}", r1, r2, r3);
-}
-
-fn lifetime() {
-    struct Foo<'a> {
-        x: &'a i32,
-    }
-
-    let y = &5;
-    let f = Foo{x: y};
-
-    println!("{}", f.x);
-}
-
-
-fn main() {
-
-    //embed::process();
+fn utf8() {
     let (x,y,mut z) = (1,2,3);
     let xx = '中';
     z += 1;
     println!("{}, {}, {}, {}", x, y, z, xx);
     println!("{}, {}, {}", abs(10),abs(-10), abs(0));
+}
+
+fn if_let() {
+    let option = Some(5);
+    fn foo(x: i32) { println!("boooom.. {}", x) }
+    fn bar() {}
+
+    if let Some(x) = option{
+        foo(x);
+    } else {
+        bar();
+    }
+
+    let mut v = vec![1,2,3,4,5];
+    while let Some(x) = v.pop() {
+        print!("{}, ", x);
+    }
+    print!("\n");
+}
+
+fn transmute() {
+
+    let a = [8u8, 7u8, 6u8, 5u8];
+
+    // 32      24      16      8       0
+    // +-------+-------+-------+-------+
+    // |  0x5  |  0x6  |  0x7  |  0x8  |
+    // +-------+-------+-------+-------+
+    // |  Point.y      |   Point.x     |
+    // +-------+-------+-------+-------+
+    //
+    struct Point {
+        x: u16,
+        y: u16
+    }
+
+    unsafe {
+        let b = std::mem::transmute::<[u8; 4], u32>(a);
+        println!("{}", b);
+        assert_eq!(0x05060708, b);
+
+        let p = std::mem::transmute::<[u8; 4], Point>(a);
+        assert_eq!(0x0506u16, p.y);
+        assert_eq!(0x0708u16, p.x);
+    }
+}
+
+fn test_variant() {
+    trait Print {
+        fn print(&self);
+    }
+
+    impl Print for str {
+        fn print(&self) {
+            println!("{}", self);
+        }
+    }
+
+    impl<T> Print for [T] where T: std::fmt::Display {
+        fn print(&self) {
+            print!("[");
+            if self.len() > 0 {
+                for i in 0..(self.len() - 1) {
+                    print!("{}, ", self[i]);
+                }
+                print!("{}", self[self.len() - 1]);
+            }
+            println!("]");
+        }
+    }
+
+    "123".print();
+    ["123"].print();
+    ["123", "999", "123"].print();
+
+    // unlimit size
+    // ?Sized:  maybe Sized
+    struct Foo<T: ?Sized> {
+        t: T,
+    }
+}
+
+fn main() {
+
+    utf8();
 
     method_type();
 
@@ -132,9 +177,15 @@ fn main() {
 
     loop_label();
 
-    move_();
+    if_let();
+    transmute();
+    test_variant();
 
-    ownership();
+    // lifetimes::main();
+    // structs::main();
+    // vectors::main();
+    // strings::main();
+    // traits::main();
+    // closures::main();
 
-    lifetime();
 }

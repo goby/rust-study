@@ -1,8 +1,8 @@
+
 use std::thread;
 
-
 #[no_mangle]
-pub extern fn process() {
+fn process() {
     let handles: Vec<_> = (0..10).map(|_| {
         thread::spawn(|| {
             let mut x = 0;
@@ -14,8 +14,13 @@ pub extern fn process() {
     }).collect();
 
     for h in handles {
-        println!("Thread finished with count = {}",
+        println!("[D] Thread finished with count = {}",
                  h.join().map_err(|_| "Could not join a thread").unwrap());
     }
+}
+
+#[test]
+pub fn main() {
+    self::process();
 }
 

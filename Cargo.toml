@@ -5,7 +5,8 @@ authors = ["goby<goby@foxmail.com>"]
 
 [dependencies]
 rand="0.3.0"
+mio="0.6.0"
 
-[lib]
-name = "embed"
-crate-type = ["dylib"]
+#[lib]
+#name = "embed"
+#crate-type = ["dylib"]
