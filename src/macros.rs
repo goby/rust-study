@@ -171,7 +171,7 @@ fn test_complex() {
     bct!(1,1,0,1,0,0;1,0);
 }
 
-fn test() {
+pub fn test() {
     unimplemented!();
 }
 
@@ -181,6 +181,7 @@ fn test() {
 ///
 /// # Example
 /// ```
+/// assert!(true);
 ///
 /// ```
 pub fn main() {
@@ -198,10 +199,9 @@ pub fn main() {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
 
     #[test]
     fn test() {
-        main();
+        super::main();
     }
 }

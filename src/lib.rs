@@ -10,3 +10,5 @@ pub mod lifetimes;
 pub mod macros;
 pub mod pointers;
 pub mod iterators;
+pub mod concurrency;
+pub mod exceptions;

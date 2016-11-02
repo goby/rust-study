@@ -1,7 +1,7 @@
 
 use std::iter;
 
-trait HasFold<T> {
+pub trait HasFold<T> {
     fn fold2<'a, F>(&self, base: &'a T, closure: F) -> &'a T
         where F: Fn(&'a T, &T) -> &'a T;
 }
@@ -20,8 +20,6 @@ impl<T> HasFold<T> for [T] where T: iter::Iterator {
 }
 
 pub fn main() {
-    use self::HasFold;
-
     let sum2 = [1,2,3,4,5,6].iter().fold(10, |s, x| s+x);
     assert_eq!(sum2, 31);
 
@@ -49,7 +47,7 @@ mod tests {
 
         let greater_than_101 = (0..100).find(|x| *x > 101);
         match greater_than_101 {
-            Some(x) => panic!("should not be here"),
+            Some(_) => panic!("should not be here"),
             None => {} ,
         }
 

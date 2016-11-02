@@ -3,7 +3,7 @@ use std::fmt;
 use std::ops::{Add, Mul};
 use std::fmt::{Debug,Display};
 
-struct Point<T> {
+pub struct Point<T> {
     x: T,
     y: T,
 }
@@ -23,30 +23,30 @@ impl<T> Add for Point<T> where T: Add<Output=T> + Copy {
     }
 }
 
-struct PointRef<'a> {
+pub struct PointRef<'a> {
     x: &'a mut i32,
     y: &'a mut i32,
 }
 
-struct Line<T> {
+pub struct Line<T> {
     start: Point<T>,
     end: Point<T>,
 }
 
 #[derive(Debug)]
-struct Point3d {
+pub struct Point3d {
     x: i32,
     y: i32,
     z: i32,
 }
 
-struct Point3dRef<'a> {
+pub struct Point3dRef<'a> {
     x: &'a mut i32,
     y: &'a mut i32,
     z: &'a mut i32,
 }
 
-struct Coord(i32);
+pub struct Coord(i32);
 
 //////enum///////
 enum Message {
@@ -57,7 +57,7 @@ enum Message {
 }
 
 #[derive(Debug)]
-struct Circle {
+pub struct Circle {
     x: f64,
     y: f64,
     radius: f64
@@ -65,7 +65,7 @@ struct Circle {
 
 
 // associate type
-trait Graph {
+pub trait Graph {
     type Node: Display;
     type Edge;
 
@@ -73,11 +73,11 @@ trait Graph {
     fn edges(&self, &Self::Node) -> Vec<Self::Edge>;
 }
 
-type Node = Point<i32>;
+pub type Node = Point<i32>;
 
-type Edge = Line<i32>;
+pub type Edge = Line<i32>;
 
-struct TestGraph;
+pub struct TestGraph;
 
 impl Graph for TestGraph {
     type Node = Node;
@@ -92,11 +92,11 @@ impl Graph for TestGraph {
     }
 }
 
-trait HasArea<T> {
+pub trait HasArea<T> {
     fn area(&self) -> T;
 }
 
-struct Square<T> {
+pub struct Square<T> {
     centor: Point<T>,
     side: T,
 }
@@ -120,26 +120,32 @@ impl Circle {
 }
 
 
-#[test]
-pub fn main() {
-    let c = self::Circle{x: 12.0, y: 30.0, radius: 1.11};
-    println!("c           = {:?}", c);
-    println!("c.grow(0.5) = {:?}", c.grow(0.5));
-    println!("c.area() == {}", c.area());
-    println!("c.grow(0.5).area == {}", c.grow(0.5).area());
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let g   = TestGraph;
-    let obj = Box::new(g) as Box<Graph<Node=Node, Edge = Edge>>;
+    #[test]
+    fn main() {
+        let c = Circle{x: 12.0, y: 30.0, radius: 1.11};
+        println!("c           = {:?}", c);
+        println!("c.grow(0.5) = {:?}", c.grow(0.5));
+        println!("c.area() == {}", c.area());
+        println!("c.grow(0.5).area == {}", c.grow(0.5).area());
 
-    let p1 = Point{x: 1, y: 10};
-    let p2 = Point{x: 100, y: 1111};
-    let p = p1 + p2;
-    assert_eq!(p.x, 101);
-    assert_eq!(p.y, 1121);
+        let g   = TestGraph;
+        let obj = Box::new(g) as Box<Graph<Node=Node, Edge = Edge>>;
 
-    let sq = Square{ centor: p, side: 20};
-    assert_eq!(sq.area(), 400);
+        let p1 = Point{x: 1, y: 10};
+        let p2 = Point{x: 100, y: 1111};
+        let p = p1 + p2;
+        assert_eq!(p.x, 101);
+        assert_eq!(p.y, 1121);
 
-    let sq = Square{ centor: Point{x: 0.0f64, y: 0.0f64}, side: 12.0f64};
-    assert_eq!(sq.area(), 12.0f64 * 12.0f64);
+        let sq = Square{ centor: p, side: 20};
+        assert_eq!(sq.area(), 400);
+
+        let sq = Square{ centor: Point{x: 0.0f64, y: 0.0f64}, side: 12.0f64};
+        assert_eq!(sq.area(), 12.0f64 * 12.0f64);
+    }
+
 }

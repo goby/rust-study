@@ -2,13 +2,11 @@ extern crate rand;
 
 extern crate guessing;
 
-use guessing::*;
-
 use std::io;
 use std::cmp::Ordering;
 use rand::Rng;
 
-//#[warn(dead_code)]
+#[allow(dead_code)]
 fn guessing_number() {
 
     println!("Guess the number!");
@@ -162,6 +160,7 @@ fn test_variant() {
 
     // unlimit size
     // ?Sized:  maybe Sized
+    #[allow(dead_code)]
     struct Foo<T: ?Sized> {
         t: T,
     }
